@@ -12,6 +12,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password, username, group, accessLevel } = req.body
     // Check for all fields
     if(!name || !username || !password || !accessLevel || !group) {
+        console.log(name, username, password, accessLevel, group)
         res.status(400)
         throw new Error('Please add all fields')
     }
