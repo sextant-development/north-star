@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 var userSchema = mongoose.Schema({
     name: {type: String, required: [true, 'Please add a name']},
-    userName: {type: String, required: [true, 'Please add a user name'], unique: true},
+    username: {type: String, required: [true, 'Please add a user name'], unique: true},
     password: {type: String, required: [true, 'Please add a password']},
     email: {type: String},
     group: {type: String, required: [true, 'Please add a group']},

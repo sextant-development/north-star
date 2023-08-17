@@ -9,9 +9,9 @@ const User = require('../models/userModel')
 // POST /api/auth/register
 // Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password, userName, group, accessLevel } = req.body
+    const { name, email, password, username, group, accessLevel } = req.body
     // Check for all fields
-    if(!name || !userName || !password || !accessLevel || !group) {
+    if(!name || !username || !password || !accessLevel || !group) {
         res.status(400)
         throw new Error('Please add all fields')
     }
@@ -32,7 +32,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         password: hashedPassword,
-        userName,
+        username,
         group,
         accessLevel
     })
@@ -42,7 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
         res.status(201).json({
             _id: user.id,
             name: user.name,
-            userName: user.userName,
+            username: user.username,
             email: user.email,
             group: user.group,
             accessLevel: user.accessLevel,
@@ -61,15 +61,18 @@ const registerUser = asyncHandler(async (req, res) => {
 // POST /api/auth/login
 // Public
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body
-    const user = await User.findOne({email})
+    const { username, password } = req.body
+    const user = await User.findOne({username})
 
     // Check if user and Password matching
     if (user && (await bcrypt.compare(password, user.password))) {
         res.json({
             _id: user.id,
             name: user.name,
+            username: user.username,
             email: user.email,
+            group: user.group,
+            accessLevel: user.accessLevel,
             accessToken: generateAccessToken(user.id),
             refreshToken: generateRefreshToken(user.id)
         })
