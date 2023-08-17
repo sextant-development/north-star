@@ -6,7 +6,7 @@ const User = require('../models/userModel')
 
 
 // Register new User
-// POST /api/users/register
+// POST /api/auth/register
 // Public
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body
@@ -52,7 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 
 // Login user
-// POST /api/users/login
+// POST /api/auth/login
 // Public
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
