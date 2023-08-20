@@ -2,6 +2,7 @@ const { default: mongoose } = require("mongoose")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
+const { generateAccessToken, generateRefreshToken } = require('../config/generateTokens')
 const User = require('../models/userModel')
 
 
@@ -9,9 +10,9 @@ const User = require('../models/userModel')
 // POST /api/auth/register
 // Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password, username, group, accessLevel } = req.body
+    const { name, email, password, username, groups, accessLevel } = req.body
     // Check for all fields
-    if(!name || !username || !password || !accessLevel || !group) {
+    if(!name || !username || !password || !accessLevel || !groups) {
         res.status(400)
         throw new Error('Please add all fields')
     }
@@ -33,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
         email,
         password: hashedPassword,
         username,
-        group,
+        groups,
         accessLevel
     })
 
@@ -44,10 +45,10 @@ const registerUser = asyncHandler(async (req, res) => {
             name: user.name,
             username: user.username,
             email: user.email,
-            group: user.group,
+            groups: user.groups,
             accessLevel: user.accessLevel,
-            accessToken: generateAccessToken(user.id),
-            refreshToken: generateRefreshToken(user.id)
+            accessToken: generateAccessToken(user.id, user.accessLevel),
+            refreshToken: generateRefreshToken(user.id, user.accessLevel)
         })
     } else {
         res.status(400)
@@ -71,10 +72,10 @@ const loginUser = asyncHandler(async (req, res) => {
             name: user.name,
             username: user.username,
             email: user.email,
-            group: user.group,
+            groups: user.groups,
             accessLevel: user.accessLevel,
-            accessToken: generateAccessToken(user.id),
-            refreshToken: generateRefreshToken(user.id)
+            accessToken: generateAccessToken(user.id, user.accessLevel),
+            refreshToken: generateRefreshToken(user.id, user.accessLevel)
         })
     } else {
         res.status(400)
@@ -87,21 +88,13 @@ const loginUser = asyncHandler(async (req, res) => {
 // GET /api/users/me:id
 // Private
 const getUser = asyncHandler(async (req, res) => {
-    res.status(200).json({'message': 'Get'})
+    res.status(200).json({
+        name: req.user.name,
+        username: req.user.username,
+        email: req.user.email,
+        groups: req.user.groups,
+    })
 })
-
-
-const generateAccessToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET_ACCESS, {
-        expiresIn: '30min'
-    })
-}
-
-const generateRefreshToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET_REFRESH, {
-        expiresIn: '365d'
-    })
-}
 
 
 module.exports = {

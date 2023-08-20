@@ -1,15 +1,10 @@
 const jwt = require('jsonwebtoken')
+const { generateAccessToken } = require('../config/generateTokens')
 
 const newAccessToken = (req, res) => {
     res.json({
-        accessToken: generateAccessToken(req.user.id)
+        accessToken: generateAccessToken(req.user.id, req.user.accessLevel)
     })
 }
 
-
-const generateAccessToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET_ACCESS, {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION
-    })
-}
 module.exports = newAccessToken

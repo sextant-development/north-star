@@ -5,7 +5,7 @@ var userSchema = mongoose.Schema({
     username: {type: String, required: [true, 'Please add a user name'], unique: true},
     password: {type: String, required: [true, 'Please add a password']},
     email: {type: String},
-    group: {type: String, required: [true, 'Please add a group']},
+    groups: {type: String, required: [true, 'Please add groups']},
     accessLevel: {type: Number, required: [true, 'Please add an access Level']},
 }, {timestamps: true})
 
