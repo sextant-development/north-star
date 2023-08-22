@@ -1,5 +1,8 @@
 const asyncHandler = require('express-async-handler')
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+const User = require('../models/userModel')
+const { registerUser } = require('./userController')
 
 const revokeToken = asyncHandler(async (req, res) => {
     // TODO: Revoke User
@@ -12,32 +15,7 @@ const updateDetails = asyncHandler(async (req, res) => {
 })
 
 const addUser = asyncHandler(async (req, res) => {
-    // TODO: Add User
-    res.send('add User')  
-})
-
-const addUsers = asyncHandler(async (req, res) => {
-    // TODO: Add Users
-    res.send('add multiple Users')  
-})
-
-const removeUser = asyncHandler(async (req, res) => {
-    // TODO: Remove Users
-    res.send('remove User')
-})
-
-const removeUsers = asyncHandler(async (req, res) => {
-    // TODO: Remove Users
-    res.send('remove multiple Users')
-})
-
-const getNotifications = asyncHandler(async (req, res) => {
-    // TODO: Get Notifications
-    res.send('Here are your notifications')
-})
-
-
-const registerUser = asyncHandler(async (req, res) => {
+    // Für Einfachheit einfach Register Funktion:
     const { name, email, password, username, groups, accessLevel } = req.body
     // Check for all fields
     if(!name || !username || !password || !accessLevel || !groups) {
@@ -75,14 +53,31 @@ const registerUser = asyncHandler(async (req, res) => {
             email: user.email,
             groups: user.groups,
             accessLevel: user.accessLevel,
-            accessToken: generateAccessToken(user.id, user.accessLevel),
-            refreshToken: generateRefreshToken(user.id, user.accessLevel)
         })
     } else {
         res.status(400)
         throw new Error('Invalid user data')
     }
+})
 
+const addUsers = asyncHandler(async (req, res) => {
+    // TODO: Add Users
+    res.send('add multiple Users')  
+})
+
+const removeUser = asyncHandler(async (req, res) => {
+    // TODO: Remove Users
+    res.send('remove User')
+})
+
+const removeUsers = asyncHandler(async (req, res) => {
+    // TODO: Remove Users
+    res.send('remove multiple Users')
+})
+
+const getNotifications = asyncHandler(async (req, res) => {
+    // TODO: Get Notifications
+    res.send('Here are your notifications')
 })
 
 

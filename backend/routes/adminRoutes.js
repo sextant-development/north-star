@@ -4,7 +4,7 @@ const { accessTokenProtection, accessLevelProtection} = require('../middleware/a
 
 const router = express.Router()
 
-router.get('/revoke-token', accessTokenProtection, accessLevelProtection(4), revokeToken)
+router.post('/revoke-token', accessTokenProtection, accessLevelProtection(4), revokeToken)
 router.patch('/update-details', accessTokenProtection, accessLevelProtection(4), updateDetails)
 router.post('/add-user', accessTokenProtection, accessLevelProtection(4), addUser)
 router.post('/add-users', accessTokenProtection, accessLevelProtection(4), addUsers)
