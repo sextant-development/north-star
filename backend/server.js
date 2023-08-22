@@ -13,7 +13,8 @@ connectDB()
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
-app.use('/api/users', require('./middleware/userMiddleware'))
+// For later use when switching databases
+// app.use('/api/users', require('./middleware/userMiddleware'))
 
 app.use('/api/auth', require('./routes/userRoutes'))
 
