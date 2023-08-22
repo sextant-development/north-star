@@ -17,6 +17,7 @@ app.use(express.urlencoded({extended: false}))
 // app.use('/api/users', require('./middleware/userMiddleware'))
 
 app.use('/api/auth', require('./routes/userRoutes'))
+app.use('/api/admin', require('./routes/adminRoutes'))
 
 
 app.use(errorHandler)

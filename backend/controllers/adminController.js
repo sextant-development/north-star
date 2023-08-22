@@ -2,30 +2,37 @@ const asyncHandler = require('express-async-handler')
 const mongoose = require('mongoose')
 
 const revokeToken = asyncHandler(async (req, res) => {
+    // TODO: Revoke User
     res.send('revoke User')
 })
 
 const updateDetails = asyncHandler(async (req, res) => {
+    // TODO: Update User
     res.send('update Details')
 })
 
 const addUser = asyncHandler(async (req, res) => {
+    // TODO: Add User
     res.send('add User')  
 })
 
 const addUsers = asyncHandler(async (req, res) => {
+    // TODO: Add Users
     res.send('add multiple Users')  
 })
 
 const removeUser = asyncHandler(async (req, res) => {
+    // TODO: Remove Users
     res.send('remove User')
 })
 
 const removeUsers = asyncHandler(async (req, res) => {
+    // TODO: Remove Users
     res.send('remove multiple Users')
 })
 
 const getNotifications = asyncHandler(async (req, res) => {
+    // TODO: Get Notifications
     res.send('Here are your notifications')
 })
 
