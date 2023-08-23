@@ -35,7 +35,8 @@ const registerUser = asyncHandler(async (req, res) => {
         password: hashedPassword,
         username,
         groups,
-        accessLevel
+        accessLevel,
+        lastRevokedTokenTime: ''
     })
 
     // Send Result

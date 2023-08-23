@@ -7,6 +7,7 @@ var userSchema = mongoose.Schema({
     email: {type: String},
     groups: {type: String, required: [true, 'Please add groups']},
     accessLevel: {type: Number, required: [true, 'Please add an access Level']},
+    lastRevokedTokenTime: {type: String}
 }, {timestamps: true})
 
 module.exports = mongoose.model('User', userSchema)

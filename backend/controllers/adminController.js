@@ -1,12 +1,33 @@
 const asyncHandler = require('express-async-handler')
 const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const User = require('../models/userModel')
 const { registerUser } = require('./userController')
 
 const revokeRefreshToken = asyncHandler(async (req, res) => {
     // TODO: Revoke User
-    res.send('revoke User')
+    let id
+    let iat
+    // Get Token and decode it
+    try {
+        const revokeToken = req.body.refreshToken
+        const decodedToken = jwt.verify(revokeToken, process.env.JWT_SECRET_REFRESH)
+        // Get Time and User
+        iat = decodedToken.iat
+        id = decodedToken.id
+    } catch (error) {
+        res.status(400)
+        throw new Error('Token nicht lesbar')
+    }
+
+    // Update User
+    const user = await User.findById(id)
+    user.lastRevokedTokenTime = iat
+    await user.save()
+    
+    res.status(200)
+    res.send('Revoked Token')
 })
 
 const updateDetails = asyncHandler(async (req, res) => {
@@ -41,7 +62,8 @@ const addUser = asyncHandler(async (req, res) => {
         password: hashedPassword,
         username,
         groups,
-        accessLevel
+        accessLevel,
+        lastRevokedTokenTime: ''
     })
 
     // Send Result
@@ -62,11 +84,10 @@ const addUser = asyncHandler(async (req, res) => {
 
 const addUsers = asyncHandler(async (req, res) => {
     // TODO: Add Users
-    res.send('add multiple Users')  
+    res.send('add multiple Users')
 })
 
 const removeUser = asyncHandler(async (req, res) => {
-    // TODO: Remove Users
     username = req.body.username
     const result = await User.deleteOne({username})
     console.log(result)
