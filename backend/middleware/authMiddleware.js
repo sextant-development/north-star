@@ -51,14 +51,24 @@ const refreshTokenProtection = asyncHandler(async (req, res, next) => {
             //Verify Token
             const decoded = jwt.verify(token, process.env.JWT_SECRET_REFRESH)
 
+
             // Make User available (without Password)
             req.user = await User.findById(decoded.id).select('-password')
+
+            // Check if Token is stil valid
+            if(!(req.user.lastRevokedTokenTime < decoded.iat)) {
+                console.log('Error')
+                throw 'TokenRevoked'
+            }
             next()
         } catch(error) {
             console.log(error)
             if (error.name === 'TokenExpiredError') {
                 res.status(401)
                 throw new Error('Token expired')
+            } else if(error === 'TokenRevoked') {
+                res.status(401)
+                throw new Error('Token got revoked')
             } else {
                 res.status(401)
                 throw new Error('Not authorized')
