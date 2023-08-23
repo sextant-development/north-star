@@ -1,10 +1,10 @@
 const express = require('express')
-const { revokeToken, updateDetails, addUser, addUsers, removeUser, removeUsers, getNotifications} = require('../controllers/adminController')
+const { revokeRefreshToken, updateDetails, addUser, addUsers, removeUser, removeUsers, getNotifications} = require('../controllers/adminController')
 const { accessTokenProtection, accessLevelProtection} = require('../middleware/authMiddleware')
 
 const router = express.Router()
 
-router.post('/revoke-token', accessTokenProtection, accessLevelProtection(4), revokeToken)
+router.post('/revoke-refresh-token', accessTokenProtection, accessLevelProtection(4), revokeRefreshToken)
 router.patch('/update-details', accessTokenProtection, accessLevelProtection(4), updateDetails)
 router.post('/add-user', accessTokenProtection, accessLevelProtection(4), addUser)
 router.post('/add-users', accessTokenProtection, accessLevelProtection(4), addUsers)

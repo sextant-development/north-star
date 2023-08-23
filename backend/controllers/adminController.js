@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const User = require('../models/userModel')
 const { registerUser } = require('./userController')
 
-const revokeToken = asyncHandler(async (req, res) => {
+const revokeRefreshToken = asyncHandler(async (req, res) => {
     // TODO: Revoke User
     res.send('revoke User')
 })
@@ -67,7 +67,16 @@ const addUsers = asyncHandler(async (req, res) => {
 
 const removeUser = asyncHandler(async (req, res) => {
     // TODO: Remove Users
-    res.send('remove User')
+    username = req.body.username
+    const result = await User.deleteOne({username})
+    console.log(result)
+    if (result.acknowledged && result.deletedCount == 1) {
+        res.status(200)
+        res.send('Deleted User')
+    } else {
+        res.status(400)
+        res.send('User doesnt exist or already deleted')
+    }
 })
 
 const removeUsers = asyncHandler(async (req, res) => {
@@ -82,7 +91,7 @@ const getNotifications = asyncHandler(async (req, res) => {
 
 
 module.exports = {
-    revokeToken,
+    revokeRefreshToken,
     updateDetails,
     addUser,
     addUsers,
