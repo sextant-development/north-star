@@ -11,8 +11,9 @@ const User = require('../models/userModel')
 // Public
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password, username, accessLevel } = req.body
+    let groups
     try {
-        let groups = JSON.parse(req.body.groups)
+        groups = JSON.parse(req.body.groups)
     } catch (error) {
         res.status(400)
         throw new Error('Groups not working')
@@ -25,7 +26,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
     
     // Check if user exists
-    const userExists = await User.findOne({email})
+    const userExists = await User.findOne({username})
     if (userExists) {
         res.status(400)
         throw new Error('User already exists')

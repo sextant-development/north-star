@@ -55,16 +55,22 @@ const updateDetails = asyncHandler(async (req, res) => {
 })
 
 const addUser = asyncHandler(async (req, res) => {
-    // Für Einfachheit einfach Register Funktion:
-    const { name, email, password, username, groups, accessLevel } = req.body
+    const { name, email, password, username, accessLevel } = req.body
+    let groups
+    try {
+        groups = JSON.parse(req.body.groups)
+    } catch (error) {
+        res.status(400)
+        throw new Error('Groups not working')
+    }
     // Check for all fields
-    if(!name || !username || !password || !accessLevel || !groups) {
+    if(!name || !username || !password || !accessLevel || groups.length === 0) {
         res.status(400)
         throw new Error('Please add all fields')
     }
     
     // Check if user exists
-    const userExists = await User.findOne({email})
+    const userExists = await User.findOne({username})
     if (userExists) {
         res.status(400)
         throw new Error('User already exists')

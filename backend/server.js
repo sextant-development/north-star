@@ -13,9 +13,9 @@ connectDB()
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
-// For later use when switching databases
-app.use('/api/users', require('./middleware/userMiddleware'))
-app.use('/api/data', require('./middleware/dataMiddleware'))
+// // For later use when switching databases
+// app.use('/api/users', require('./middleware/userMiddleware'))
+// app.use('/api/data', require('./middleware/dataMiddleware'))
 
 app.use('/api/auth', require('./routes/userRoutes'))
 app.use('/api/admin', require('./routes/adminRoutes'))
