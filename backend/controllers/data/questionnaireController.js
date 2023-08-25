@@ -37,6 +37,28 @@ const addQuestionnaire = asyncHandler(async (req, res) => {
 
 })
 
+const removeQuestionnaire = asyncHandler(async (req, res) => {
+    const { id } = req.body
+    if(!id) {
+        res.status(400)
+        throw new Error('Please provide ID.')
+    }
+
+
+    const result = await Questionnaire.deleteOne({ _id: id})
+
+    if(result.acknowledged && result.deletedCount === 1) {
+        res.send('Deleted successfully')
+    } else {
+        res.status(400)
+        throw new Error('Questionnaire doesnt exist or already deleted')
+    }
+
+
+
+})
+
 module.exports = {
-    addQuestionnaire
+    addQuestionnaire,
+    removeQuestionnaire
 }
