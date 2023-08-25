@@ -60,6 +60,7 @@ const refreshTokenProtection = asyncHandler(async (req, res, next) => {
                 console.log('Error')
                 throw 'TokenRevoked'
             }
+            
             next()
         } catch(error) {
             console.log(error)

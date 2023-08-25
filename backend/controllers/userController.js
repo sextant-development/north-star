@@ -10,9 +10,16 @@ const User = require('../models/userModel')
 // POST /api/auth/register
 // Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password, username, groups, accessLevel } = req.body
+    const { name, email, password, username, accessLevel } = req.body
+    try {
+        let groups = JSON.parse(req.body.groups)
+    } catch (error) {
+        res.status(400)
+        throw new Error('Groups not working')
+    }
+    
     // Check for all fields
-    if(!name || !username || !password || !accessLevel || !groups) {
+    if(!name || !username || !password || !accessLevel || groups.length === 0) {
         res.status(400)
         throw new Error('Please add all fields')
     }

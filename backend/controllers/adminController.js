@@ -6,7 +6,6 @@ const User = require('../models/userModel')
 const { registerUser } = require('./userController')
 
 const revokeRefreshToken = asyncHandler(async (req, res) => {
-    // TODO: Revoke User
     let id
     let iat
     // Get Token and decode it
@@ -31,8 +30,28 @@ const revokeRefreshToken = asyncHandler(async (req, res) => {
 })
 
 const updateDetails = asyncHandler(async (req, res) => {
-    // TODO: Update User
-    res.send('update Details')
+    const { name, username, email, accessLevel, groups } = req.body
+    if(!username) {
+        res.status(400)
+        throw new Error('Please specify user to update. (username)')
+    }
+
+    // Get User
+    const user = await User.findOne({username})
+    if(!user) {
+        res.status(400)
+        throw new Error('Couldnt find user')
+    }
+
+    // Update all necessary details
+    if(name) user.name = name
+    if(email) user.email = email
+    if(accessLevel) user.accessLevel = accessLevel
+    if(groups) user.groups = groups
+
+    await user.save()
+
+    res.send('updated Details')
 })
 
 const addUser = asyncHandler(async (req, res) => {
