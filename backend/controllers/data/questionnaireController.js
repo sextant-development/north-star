@@ -1,6 +1,14 @@
 const Questionnaire = require('../../models/questionnaireModel')
 const asyncHandler = require('express-async-handler')
 
+const getQuestionnaires = asyncHandler(async (req, res) => {
+    authorId = req.user.id
+
+    const questionnaires = await Questionnaire.find({authorId})
+    
+    res.send(questionnaires)
+})
+
 const addQuestionnaire = asyncHandler(async (req, res) => {
     // Extrac Information
     const { publishTime } = req.body
@@ -44,7 +52,6 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
         throw new Error('Please provide ID.')
     }
 
-
     const result = await Questionnaire.deleteOne({ _id: id})
 
     if(result.acknowledged && result.deletedCount === 1) {
@@ -53,12 +60,10 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('Questionnaire doesnt exist or already deleted')
     }
-
-
-
 })
 
 module.exports = {
+    getQuestionnaires,
     addQuestionnaire,
     removeQuestionnaire
 }

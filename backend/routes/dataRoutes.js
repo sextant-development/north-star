@@ -1,5 +1,5 @@
 const express = require('express')
-const { addQuestionnaire, removeQuestionnaire } = require('../controllers/data/questionnaireController')
+const { getQuestionnaires, addQuestionnaire, removeQuestionnaire } = require('../controllers/data/questionnaireController')
 const { accessTokenProtection, accessLevelProtection } = require('../middleware/authMiddleware')
 
 const router = express.Router()
@@ -8,6 +8,7 @@ const router = express.Router()
 
 
 // Lehrer Routes
+router.get('/questionnaires/get', accessTokenProtection, accessLevelProtection(2), getQuestionnaires)
 router.post('/questionnaires/add', accessTokenProtection, accessLevelProtection(2), addQuestionnaire)
 router.delete('/questionnaires/remove', accessTokenProtection, accessLevelProtection(2),removeQuestionnaire)
 
