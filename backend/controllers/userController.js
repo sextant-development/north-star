@@ -94,8 +94,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
 
 // Get User Information
-// GET /api/users/me:id
-// Private
+// GET /api/auth/me:id
+// Private - Level 1
 const getUser = asyncHandler(async (req, res) => {
     res.status(200).json({
         name: req.user.name,

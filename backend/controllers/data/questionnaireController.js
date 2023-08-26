@@ -1,6 +1,11 @@
 const Questionnaire = require('../../models/questionnaireModel')
 const asyncHandler = require('express-async-handler')
 
+//-----------------  TEACHERS  --------------------------------
+
+// Get List of created Questionnaires (Teacher)
+// GET /api/data/questionnaires/get
+// Private - Level 2
 const getQuestionnaires = asyncHandler(async (req, res) => {
     authorId = req.user.id
 
@@ -9,6 +14,9 @@ const getQuestionnaires = asyncHandler(async (req, res) => {
     res.send(questionnaires)
 })
 
+// Add Questionnaire (Teacher)
+// POST /api/data/questionnaires/add
+// Private - Level 2
 const addQuestionnaire = asyncHandler(async (req, res) => {
     // Extrac Information
     const { publishTime } = req.body
@@ -45,6 +53,9 @@ const addQuestionnaire = asyncHandler(async (req, res) => {
 
 })
 
+// Remove Questionnaire (Teacher)
+// DEL /api/data/questionnaire/remove
+// Private - Level 2
 const removeQuestionnaire = asyncHandler(async (req, res) => {
     const { id } = req.body
     if(!id) {
@@ -62,8 +73,28 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
     }
 })
 
+//------------------  Pupils  ---------------------------------
+
+// Get all available Questionnaires specific groups of the user
+// GET /api/data/questionnaires/available
+// Private - Level 1
+const getAvailableQuestionnaires = (req, res) => {
+
+}
+
+// Submit answer to questionnaire
+// POST /api/data/questionnaires/submit
+// Private - Level 1
+const submitAnswer = (req, res) => {
+
+}
+
+
+
 module.exports = {
     getQuestionnaires,
     addQuestionnaire,
-    removeQuestionnaire
+    removeQuestionnaire,
+    getAvailableQuestionnaires,
+    submitAnswer
 }

@@ -7,7 +7,7 @@ const router = express.Router()
 router.post('/register', registerUser)
 router.post('/login', loginUser)
 router.get('/me', accessTokenProtection, getUser)
-router.get('/newAccessToken', refreshTokenProtection, newAccessToken)
+router.get('/refresh-access-token', refreshTokenProtection, newAccessToken)
 
 
 
