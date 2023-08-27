@@ -1,5 +1,8 @@
 const Questionnaire = require('../../models/questionnaireModel')
+const Answer = require('../../models/answerModel')
 const asyncHandler = require('express-async-handler')
+
+
 
 //-----------------  TEACHERS  --------------------------------
 
@@ -73,6 +76,8 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
     }
 })
 
+
+
 //------------------  Pupils  ---------------------------------
 
 // Get all available Questionnaires specific groups of the user
@@ -99,9 +104,37 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
 // Submit answer to questionnaire
 // POST /api/data/questionnaires/submit
 // Private - Level 1
-const submitAnswer = (req, res) => {
+const submitAnswer = asyncHandler(async (req, res) => {
+    const { questionnaireId, value } = req.body
+    let tags
+    const id = req.user.id
 
-}
+    try {
+        tags = JSON.parse(req.body.tags)
+    } catch (error) {
+        res.status(400)
+        throw new Error('Wrong formatting of JSON Object')
+    }
+
+    if (!questionnaireId || !tags || !value) {
+        res.status(400)
+        throw new Error('Please add all fields')
+    }
+
+    const answer = await Answer.create({
+        participantId: id,
+        questionnaireId,
+        tags,
+        value
+    })
+
+    if(answer) {
+        res.send('Answer got created')
+    } else {
+        res.status(400)
+        throw new Error('Something went wrong')
+    }
+})
 
 
 
