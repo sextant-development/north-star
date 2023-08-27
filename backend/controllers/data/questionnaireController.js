@@ -78,9 +78,23 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
 // Get all available Questionnaires specific groups of the user
 // GET /api/data/questionnaires/available
 // Private - Level 1
-const getAvailableQuestionnaires = (req, res) => {
-
-}
+const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
+    const groups = req.user.groups
+    let questionnaires = []
+    
+    
+    for (let i = 0; i < groups.length; i++) {
+        const group = groups[i];
+        const results = await Questionnaire.find({groups: group})
+        
+        for (let j = 0; j < results.length; j++) {
+            const result = results[j]
+            questionnaires.push(result)
+        }
+    }
+    console.log(questionnaires)
+    res.json(questionnaires)
+})
 
 // Submit answer to questionnaire
 // POST /api/data/questionnaires/submit

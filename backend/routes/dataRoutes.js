@@ -13,6 +13,6 @@ router.post('/questionnaires/add', accessTokenProtection, accessLevelProtection(
 router.delete('/questionnaires/remove', accessTokenProtection, accessLevelProtection(2),removeQuestionnaire)
 
 // Schüler Routes
-router.get('/questionnaires/get', accessTokenProtection, accessLevelProtection(1), getAvailableQuestionnaires)
+router.get('/questionnaires/available', accessTokenProtection, accessLevelProtection(1), getAvailableQuestionnaires)
 router.post('/questionnaires/submit', accessTokenProtection, accessLevelProtection(1), submitAnswer)
 module.exports = router
