@@ -84,20 +84,20 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
 // GET /api/data/questionnaires/available
 // Private - Level 1
 const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
-    const groups = req.user.groups
+    const userGroups = req.user.groups
     let questionnaires = []
-    
-    
-    for (let i = 0; i < groups.length; i++) {
-        const group = groups[i];
-        const results = await Questionnaire.find({groups: group})
-        
-        for (let j = 0; j < results.length; j++) {
-            const result = results[j]
-            questionnaires.push(result)
-        }
-    }
+    questionnaires = Questionnaire.find({ publishTime: {$gt: new Date()}, groups: {$all: userGroups}})
     console.log(questionnaires)
+
+    // for (let i = 0; i < groups.length; i++) {
+    //     const group = groups[i];
+    //     const results = await Questionnaire.find({groups: group})
+        
+    //     for (let j = 0; j < results.length; j++) {
+    //         const result = results[j]
+    //         questionnaires.push(result)
+    //     }
+    // }
     res.json(questionnaires)
 })
 
