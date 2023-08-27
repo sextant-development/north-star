@@ -108,7 +108,9 @@ const submitAnswer = asyncHandler(async (req, res) => {
     const { questionnaireId } = req.body
     let answers
     const id = req.user.id
+    const userGroups = req.user.groups
     const questionnaire = await Questionnaire.findById({_id: questionnaireId})
+    const questionnaireGroups = questionnaire.groups
 
     try {
         answers = JSON.parse(req.body.answers)
@@ -117,24 +119,34 @@ const submitAnswer = asyncHandler(async (req, res) => {
         throw new Error('Wrong formatting of JSON Object')
     }
 
-    if (!questionnaireId || !answers || ) {
+    if (!questionnaireId || !answers || 
+        answers.length != questionnaire.questions.length) {
         res.status(400)
-        throw new Error('Please add all fields')
+        throw new Error('Please add all fields correctly.')
     }
 
-    const answer = await Answer.create({
-        participantId: id,
-        questionnaireId,
-        tags,
-        value
-    })
-
-    if(answer) {
-        res.send('Answer got created')
-    } else {
-        res.status(400)
-        throw new Error('Something went wrong')
+    if(!(userGroups.some((group) => questionnaireGroups.includes(group)))) {
+        res.status(401)
+        throw new Error('Wrong Group')
     }
+
+
+    for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i]
+        const answerDB = await Answer.create({
+            participantId: id,
+            questionnaireId: questionnaire.id,
+            tags: answer.tags,
+            value: answer.value
+        })
+
+        if(!answerDB) {
+            res.status(400)
+            throw new Error('Something went wrong')
+        }
+
+    }
+    res.send('Answer got created')
 })
 
 
