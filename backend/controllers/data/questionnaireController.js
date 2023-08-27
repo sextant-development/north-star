@@ -105,18 +105,19 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
 // POST /api/data/questionnaires/submit
 // Private - Level 1
 const submitAnswer = asyncHandler(async (req, res) => {
-    const { questionnaireId, value } = req.body
-    let tags
+    const { questionnaireId } = req.body
+    let answers
     const id = req.user.id
+    const questionnaire = await Questionnaire.findById({_id: questionnaireId})
 
     try {
-        tags = JSON.parse(req.body.tags)
+        answers = JSON.parse(req.body.answers)
     } catch (error) {
         res.status(400)
         throw new Error('Wrong formatting of JSON Object')
     }
 
-    if (!questionnaireId || !tags || !value) {
+    if (!questionnaireId || !answers || ) {
         res.status(400)
         throw new Error('Please add all fields')
     }
