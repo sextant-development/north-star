@@ -85,12 +85,12 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
 const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
     const userGroups = req.user.groups
     let questionnaires = []
-    
+
     const date = new Date(new Date().getTime() - (12*60*60*1000))
     questionnaires = await Questionnaire.find({publishTime: {$gt: date, $lt: new Date()}, groups: {$in: userGroups}})
 
-
-    res.json(questionnaires)
+    const result = `{"questionnaires": ${questionnaires}}`
+    res.send(result)
 })
 
 // Submit answer to questionnaire
