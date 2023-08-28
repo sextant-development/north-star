@@ -1,6 +1,8 @@
 const Questionnaire = require('../../models/questionnaireModel')
+const User = require('../../models/userModel')
 const Answer = require('../../models/answerModel')
 const asyncHandler = require('express-async-handler')
+const { default: mongoose } = require('mongoose')
 
 
 //-----------------  TEACHERS  --------------------------------
@@ -41,7 +43,7 @@ const addQuestionnaire = asyncHandler(async (req, res) => {
     }
 
     const questionnaire = await Questionnaire.create({
-        authorId,
+        author: authorId,
         publishTime,
         groups,
         questions
@@ -84,12 +86,10 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
 // Private - Level 1
 const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
     const userGroups = req.user.groups
-    let questionnaires = []
 
     const date = new Date(new Date().getTime() - (12*60*60*1000))
-    questionnaires = await Questionnaire.find({publishTime: {$gt: date, $lt: new Date()}, groups: {$in: userGroups}})
+    let questionnaires = await Questionnaire.find({publishTime: {$gt: date, $lt: new Date()}, groups: {$in: userGroups}}).populate('author', 'name')
 
-    const result = `{"questionnaires": [${JSON.stringify(questionnaires)}]}`
     res.send(JSON.stringify(questionnaires))
 })
 
