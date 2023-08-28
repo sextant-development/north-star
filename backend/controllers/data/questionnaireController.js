@@ -90,7 +90,7 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
     questionnaires = await Questionnaire.find({publishTime: {$gt: date, $lt: new Date()}, groups: {$in: userGroups}})
 
     const result = `{"questionnaires": [${JSON.stringify(questionnaires)}]}`
-    res.send(result)
+    res.send(JSON.stringify(questionnaires))
 })
 
 // Submit answer to questionnaire
