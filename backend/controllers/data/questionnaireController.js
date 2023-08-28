@@ -126,8 +126,8 @@ const submitAnswer = asyncHandler(async (req, res) => {
     for (let i = 0; i < answers.length; i++) {
         const answer = answers[i]
         const answerDB = await Answer.create({
-            participantId: id,
-            questionnaireId: questionnaire.id,
+            participant: id,
+            questionnaire: questionnaire.id,
             tags: answer.tags,
             value: answer.value
         })
