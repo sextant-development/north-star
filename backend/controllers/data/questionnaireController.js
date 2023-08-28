@@ -3,7 +3,6 @@ const Answer = require('../../models/answerModel')
 const asyncHandler = require('express-async-handler')
 
 
-
 //-----------------  TEACHERS  --------------------------------
 
 // Get List of created Questionnaires (Teacher)
@@ -86,18 +85,11 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
 const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
     const userGroups = req.user.groups
     let questionnaires = []
-    questionnaires = Questionnaire.find({ publishTime: {$gt: new Date()}, groups: {$all: userGroups}})
-    console.log(questionnaires)
+    
+    const date = new Date(new Date().getTime() - (12*60*60*1000))
+    questionnaires = await Questionnaire.find({publishTime: {$gt: date, $lt: new Date()}, groups: {$in: userGroups}})
 
-    // for (let i = 0; i < groups.length; i++) {
-    //     const group = groups[i];
-    //     const results = await Questionnaire.find({groups: group})
-        
-    //     for (let j = 0; j < results.length; j++) {
-    //         const result = results[j]
-    //         questionnaires.push(result)
-    //     }
-    // }
+
     res.json(questionnaires)
 })
 
