@@ -1,6 +1,7 @@
 const express = require('express')
 const { getQuestionnaires, addQuestionnaire, removeQuestionnaire, getAvailableQuestionnaires, submitAnswer } = require('../controllers/data/questionnaireController')
 const { accessTokenProtection, accessLevelProtection } = require('../middleware/authMiddleware')
+const { statistics30d, statisticsYear, statisticsYearDetails } = require('../controllers/data/statisticsController')
 
 const router = express.Router()
 
@@ -15,4 +16,13 @@ router.delete('/questionnaires/remove', accessTokenProtection, accessLevelProtec
 // Schüler Routes
 router.get('/questionnaires/available', accessTokenProtection, accessLevelProtection(1), getAvailableQuestionnaires)
 router.post('/questionnaires/submit', accessTokenProtection, accessLevelProtection(1), submitAnswer)
+
+// Statistik Routes
+router.get('/statistics/30d', accessTokenProtection, accessLevelProtection(1), statistics30d)
+router.get('/statistics/year', accessTokenProtection, accessLevelProtection(1), statisticsYear)
+router.get('/statistics/year-details', accessTokenProtection, accessLevelProtection(1), statisticsYearDetails)
+
+
+
+
 module.exports = router
