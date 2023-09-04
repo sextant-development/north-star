@@ -5,16 +5,15 @@ const Answer = require('../../models/answerModel')
 const Questionnaire = require('../../models/questionnaireModel')
 const { default: mongoose } = require('mongoose')
 
-// Statistiken für letzte 30d
-// GET /api/data/statistics/30d
-// Private
-const statistics30d = asyncHandler(async (req, res) => {
+
+// Statistik dynamic
+const statistics = asyncHandler(async (req, res, days) => {
     const user = req.user
 
     let results
     let userFilter
     const currentDate = new Date()
-    const date = new Date(currentDate.getTime() - (30*24*60*60*1000))
+    const date = new Date(currentDate.getTime() - (days*24*60*60*1000))
 
     if (user.accessLevel == 1) {
         // SCHÜLER: Filter
@@ -70,11 +69,19 @@ const statistics30d = asyncHandler(async (req, res) => {
     res.json(stats)
 })
 
+// Statistiken für letzte 30d
+// GET /api/data/statistics/30d
+// Private
+const statistics30d = asyncHandler(async (req, res) => {
+    statistics(req, res, 30)
+})
+
 // Statistiken für letztes Jahr
 // GET /api/data/statistics/year
 // Private
 const statisticsYear = asyncHandler(async (req, res) => {
-
+    const days = 365
+    statistics(req, res, days)
 })
 
 // Statistiken für letztes Jahr mit detaillierten Reports (Groups)
