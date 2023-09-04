@@ -28,6 +28,7 @@ const addQuestionnaire = asyncHandler(async (req, res) => {
     console.log(authorId)
     let questions
     let groups
+    let answerCount = 0
     try {
         questions = JSON.parse(req.body.questions)
         groups = JSON.parse(req.body.groups)
@@ -35,9 +36,29 @@ const addQuestionnaire = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('Questions or groups not working')
     }
+    
+
+    // Get required answerCount
+    questions.forEach(question => {
+        switch (question.type) {
+            case 'fixed':
+            case 'flexible':
+                answerCount = answerCount + 1
+                break;
+            case 'dual':
+                answerCount = answerCount + 2
+                break
+            case 'quad':
+                answerCount = answerCount + 4
+                break
+            default:
+                break;
+        }
+    });
+
 
     // Check all fields
-    if(!publishTime || groups.length === 0 || questions.length === 0) {
+    if(!publishTime || groups.length === 0 || questions.length === 0 || !answerCount) {
         res.status(400)
         throw new Error('Please add all fields.')
     }
@@ -46,7 +67,8 @@ const addQuestionnaire = asyncHandler(async (req, res) => {
         author: authorId,
         publishTime,
         groups,
-        questions
+        questions: JSON.stringify(questions),
+        answerCount
     })
     if(questionnaire) {
         res.send('Questionnaire got created')
@@ -104,6 +126,7 @@ const submitAnswer = asyncHandler(async (req, res) => {
     const questionnaire = await Questionnaire.findById({_id: questionnaireId})
     const questionnaireGroups = questionnaire.groups
 
+    // Valid Answer Object?
     try {
         answers = JSON.parse(req.body.answers)
     } catch (error) {
@@ -111,18 +134,25 @@ const submitAnswer = asyncHandler(async (req, res) => {
         throw new Error('Wrong formatting of JSON Object')
     }
 
-    if (!questionnaireId || !answers || 
-        answers.length != questionnaire.questions.length) {
+    // Alles vorhanden?
+    if (!questionnaireId || !answers) {
         res.status(400)
         throw new Error('Please add all fields correctly.')
     }
 
+    // Richtige Anzahl an Antoworten?
+    if(answers.length != questionnaire.answerCount) {
+        res.status(404)
+        throw new Error('Wrong count of answers')
+    }
+
+    // Richtige Groups?
     if(!(userGroups.some((group) => questionnaireGroups.includes(group)))) {
         res.status(401)
         throw new Error('Wrong Group')
     }
 
-
+    // Über alle Antoworten iterieren
     for (let i = 0; i < answers.length; i++) {
         const answer = answers[i]
         const answerDB = await Answer.create({

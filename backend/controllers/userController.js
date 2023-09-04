@@ -71,9 +71,13 @@ const registerUser = asyncHandler(async (req, res) => {
 // POST /api/auth/login
 // Public
 const loginUser = asyncHandler(async (req, res) => {
-    const { username, password } = req.body
+    const { username, password, notificationToken } = req.body
     const user = await User.findOne({username})
-
+    if(notificationToken) {
+        user.notificationToken = notificationToken
+        await user.save()
+    }
+    
     // Check if user and Password matching
     if (user && (await bcrypt.compare(password, user.password))) {
         res.json({
