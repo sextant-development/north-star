@@ -2,11 +2,14 @@ const express = require('express')
 const mongoose = require('mongoose')
 const colors = require('colors')
 const {connectDB} = require('./config/db')
+const initializeFirebase = require('./config/firebase')
 const errorHandler = require('./middleware/errorMiddleware')
 const dotenv = require('dotenv').config()
 const port = process.env.PORT || 5000
 const app = express()
 
+// Initializing
+initializeFirebase()
 connectDB()
 
 

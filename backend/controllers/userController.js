@@ -73,6 +73,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     const { username, password, notificationToken } = req.body
     const user = await User.findOne({username})
+    // TODO: Ausloggen handeln
     if(notificationToken) {
         user.notificationToken = notificationToken
         await user.save()

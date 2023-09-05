@@ -21,11 +21,11 @@ const getQuestionnaires = asyncHandler(async (req, res) => {
 // Add Questionnaire (Teacher)
 // POST /api/data/questionnaires/add
 // Private - Level 2
-const addQuestionnaire = asyncHandler(async (req, res) => {
+const addQuestionnaire = asyncHandler(async (req, res, next) => {
     // Extrac Information
     const { publishTime } = req.body
     const authorId = req.user.id
-    console.log(authorId)
+
     let questions
     let groups
     let answerCount = 0
@@ -70,12 +70,33 @@ const addQuestionnaire = asyncHandler(async (req, res) => {
         questions: JSON.stringify(questions),
         answerCount
     })
+
+    // Result rausschicken
     if(questionnaire) {
         res.send('Questionnaire got created')
     } else {
         res.status(400)
         throw new Error('Something went wrong.')
     }
+    
+    // Handling für Notification
+    let notificationTokens = []
+    const results = await User.aggregate([{$match: {groups: {$in: groups}}}])
+    results.forEach((result) => {
+        notificationTokens.push(result.notificationToken)
+    })
+
+    console.log(notificationTokens)
+
+    const notification = {
+        notification: {
+            title: 'Neue Umfrage',
+            body: `${req.user.name} hat eine neue Umfrage für dich erstellt`
+        },
+        tokens: notificationTokens,
+    }
+    req.notificationData = notification
+    next()
 
 })
 

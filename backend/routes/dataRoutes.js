@@ -2,6 +2,7 @@ const express = require('express')
 const { getQuestionnaires, addQuestionnaire, removeQuestionnaire, getAvailableQuestionnaires, submitAnswer } = require('../controllers/data/questionnaireController')
 const { accessTokenProtection, accessLevelProtection } = require('../middleware/authMiddleware')
 const { statistics30d, statisticsYear, statisticsYearDetails } = require('../controllers/data/statisticsController')
+const notificationHandler = require('../middleware/notificationMiddleware')
 
 const router = express.Router()
 
@@ -10,7 +11,7 @@ const router = express.Router()
 
 // Lehrer Routes
 router.get('/questionnaires/get', accessTokenProtection, accessLevelProtection(2), getQuestionnaires)
-router.post('/questionnaires/add', accessTokenProtection, accessLevelProtection(2), addQuestionnaire)
+router.post('/questionnaires/add', accessTokenProtection, accessLevelProtection(2), addQuestionnaire, notificationHandler)
 router.delete('/questionnaires/remove', accessTokenProtection, accessLevelProtection(2),removeQuestionnaire)
 
 // Schüler Routes

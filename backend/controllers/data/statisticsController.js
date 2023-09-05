@@ -79,7 +79,7 @@ const statistics30d = asyncHandler(async (req, res) => {
 // Statistiken für letztes Jahr
 // GET /api/data/statistics/year
 // Private
-const statisticsYear = asyncHandler(async (req, res) => {
+const statisticsYear = asyncHandler(async (req, res, next) => {
     const days = 365
     statistics(req, res, days)
 })
