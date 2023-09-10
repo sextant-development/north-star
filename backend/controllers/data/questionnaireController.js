@@ -148,6 +148,7 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
 // Private - Level 1
 const submitAnswer = asyncHandler(async (req, res) => {
     const { questionnaireId } = req.body
+    console.log(questionnaireId)
     let answers
     const id = req.user.id
     
