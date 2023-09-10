@@ -130,6 +130,8 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
 const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
     const userGroups = req.user.groups
     const userId = req.user.id
+    let userIds = []
+    userIds.push(new mongoose.Types.ObjectId(userId))
 
 
     const date = new Date(new Date().getTime() - (12*60*60*1000))
@@ -138,10 +140,9 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
                                                         {$lookup: {from: 'answers', localField: '_id', foreignField: 'questionnaire', as: 'answers'}},
                                                         {$addFields: {answerUserIds: {$setUnion: {$map: {input: '$answers', as: 'answer', in: '$$answer.participant'}}}}},
                                                         {$unset: 'answers'},
-                                                        {$match: {answerUserIds: {$in: [userId]}}}])
-
-    // {$not: {$elemMatch: {'participant': userId}}}
-    // .populate('author', 'name')
+                                                        {$match: {answerUserIds: {$in: userIds}}},
+                                                        {$unset: 'answerUserIds'}
+                                                    ])
 
     let questionnairesParsed = []
 
