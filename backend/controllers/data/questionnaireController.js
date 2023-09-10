@@ -132,9 +132,15 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
 
     const date = new Date(new Date().getTime() - (12*60*60*1000))
     let questionnaires = await Questionnaire.find({publishTime: {$gt: date, $lt: new Date()}, groups: {$in: userGroups}}).populate('author', 'name')
+    let questionnairesParsed = []
 
-    console.log(JSON.stringify(questionnaires))
-    res.send(JSON.stringify(questionnaires))
+    for (let i = 0; i < questionnaires.length; i++) {
+        let questionnaire = JSON.parse(JSON.stringify(questionnaires[i]))
+        questionnaire.questions = JSON.parse(questionnaire.questions)
+        questionnairesParsed.push(questionnaire)
+    }
+
+    res.send(questionnairesParsed)
 })
 
 // Submit answer to questionnaire
