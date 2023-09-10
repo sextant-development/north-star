@@ -129,9 +129,20 @@ const removeQuestionnaire = asyncHandler(async (req, res) => {
 // Private - Level 1
 const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
     const userGroups = req.user.groups
+    const userId = req.user.id
+
 
     const date = new Date(new Date().getTime() - (12*60*60*1000))
-    let questionnaires = await Questionnaire.find({publishTime: {$gt: date, $lt: new Date()}, groups: {$in: userGroups}}).populate('author', 'name')
+    // let questionnaires = await Questionnaire.find({publishTime: {$gt: date, $lt: new Date()}, groups: {$in: userGroups}}).populate('author', 'name')
+    let questionnaires = await Questionnaire.aggregate([{$match: {$and: [{publishTime: {$gt: date, $lt: new Date()}}, {groups: {$in: userGroups}}]}},
+                                                        {$lookup: {from: 'answers', localField: '_id', foreignField: 'questionnaire', as: 'answers'}},
+                                                        {$addFields: {answerUserIds: {$setUnion: {$map: {input: '$answers', as: 'answer', in: '$$answer.participant'}}}}},
+                                                        {$unset: 'answers'},
+                                                        {$match: {answerUserIds: {$in: [userId]}}}])
+
+    // {$not: {$elemMatch: {'participant': userId}}}
+    // .populate('author', 'name')
+
     let questionnairesParsed = []
 
     for (let i = 0; i < questionnaires.length; i++) {
@@ -141,6 +152,7 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
     }
 
     res.send(JSON.stringify(questionnairesParsed))
+
 })
 
 // Submit answer to questionnaire
@@ -148,8 +160,8 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
 // Private - Level 1
 const submitAnswer = asyncHandler(async (req, res) => {
     const { questionnaireId } = req.body
-    console.log(questionnaireId)
     let answers
+    console.log(req.body.answers)
     const id = req.user.id
     
     const userGroups = req.user.groups
