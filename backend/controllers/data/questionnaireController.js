@@ -133,16 +133,22 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
     let userIds = []
     userIds.push(new mongoose.Types.ObjectId(userId))
 
-
     const date = new Date(new Date().getTime() - (12*60*60*1000))
-    // let questionnaires = await Questionnaire.find({publishTime: {$gt: date, $lt: new Date()}, groups: {$in: userGroups}}).populate('author', 'name')
+    
+    // AGGREGATION
+    // $match: nach publishTime und zutreffender Group filtern
+    // $lookup: alle passenden answers einfügen
+    // $addFields: alle answerIds zusammenschreiben (nichts doppelt)
+    // $unset: answers löschen
+    // $match: alle schon beantworteten Quesitonnaires aussortieren
+    // $unset: answerUserIds löschen
     let questionnaires = await Questionnaire.aggregate([{$match: {$and: [{publishTime: {$gt: date, $lt: new Date()}}, {groups: {$in: userGroups}}]}},
                                                         {$lookup: {from: 'answers', localField: '_id', foreignField: 'questionnaire', as: 'answers'}},
                                                         {$addFields: {answerUserIds: {$setUnion: {$map: {input: '$answers', as: 'answer', in: '$$answer.participant'}}}}},
                                                         {$unset: 'answers'},
-                                                        {$match: {answerUserIds: {$in: userIds}}},
-                                                        {$unset: 'answerUserIds'}
-                                                    ])
+                                                        {$match: {answerUserIds: {$nin: userIds}}},
+                                                        {$unset: 'answerUserIds'}])
+
 
     let questionnairesParsed = []
 
@@ -153,7 +159,6 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
     }
 
     res.send(JSON.stringify(questionnairesParsed))
-
 })
 
 // Submit answer to questionnaire
