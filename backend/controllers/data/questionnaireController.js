@@ -154,6 +154,10 @@ const submitAnswer = asyncHandler(async (req, res) => {
     
     const userGroups = req.user.groups
     const questionnaire = await Questionnaire.findById(questionnaireId)
+    if(!questionnaire) {
+        res.status(400)
+        throw new Error('Wrong Questionnaire ID')
+    }
     const questionnaireGroups = questionnaire.groups
 
     // Valid Answer Object?
