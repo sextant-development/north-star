@@ -150,8 +150,9 @@ const submitAnswer = asyncHandler(async (req, res) => {
     const { questionnaireId } = req.body
     let answers
     const id = req.user.id
+    
     const userGroups = req.user.groups
-    const questionnaire = await Questionnaire.findById({_id: questionnaireId})
+    const questionnaire = await Questionnaire.findById(questionnaireId)
     const questionnaireGroups = questionnaire.groups
 
     // Valid Answer Object?
