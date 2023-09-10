@@ -111,8 +111,37 @@ const getUser = asyncHandler(async (req, res) => {
 })
 
 
+// Change User Password
+// POST /api/auth/change-password
+// Private (+Password)
+const changePassword = asyncHandler(async (req, res) => {
+    const { currentPassword, newPassword} = req.body
+    let user = await User.findOne({'id': req.user.id})
+
+    // Check if user and Password right
+    if (!user || !(await bcrypt.compare(currentPassword, user.password))) {
+        res.status(400)
+        throw new Error('Invalid credentials')
+    }
+
+    // Create Password
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(newPassword, salt)
+
+    // Save User
+    user.password = hashedPassword
+    user = await user.save()
+    if(!user) {
+        res.status(500)
+        throw new Error('Fehler beim speichern')
+    }
+    res.status(200)
+    res.send('Set password successfully')
+})
+
 module.exports = {
     registerUser,
     loginUser,
-    getUser
+    getUser,
+    changePassword
 }

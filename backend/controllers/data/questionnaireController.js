@@ -147,9 +147,11 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
                                                         {$addFields: {answerUserIds: {$setUnion: {$map: {input: '$answers', as: 'answer', in: '$$answer.participant'}}}}},
                                                         {$unset: 'answers'},
                                                         {$match: {answerUserIds: {$nin: userIds}}},
-                                                        {$unset: 'answerUserIds'}])
+                                                        {$unset: 'answerUserIds'},
+                                                        // {$lookup: {from: 'users', localField: 'author', foreignField: '_id', as: 'author'}}
+                                                    ])
 
-
+    await Questionnaire.populate(questionnaires, {path: 'author', select: 'name'})
     let questionnairesParsed = []
 
     for (let i = 0; i < questionnaires.length; i++) {
