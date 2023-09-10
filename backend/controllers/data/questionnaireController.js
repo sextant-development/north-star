@@ -140,7 +140,7 @@ const getAvailableQuestionnaires = asyncHandler(async (req, res) => {
         questionnairesParsed.push(questionnaire)
     }
 
-    res.send(questionnairesParsed)
+    res.send(JSON.stringify(questionnairesParsed))
 })
 
 // Submit answer to questionnaire
