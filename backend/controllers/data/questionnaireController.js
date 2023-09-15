@@ -175,7 +175,7 @@ const submitAnswer = asyncHandler(async (req, res) => {
     const userGroups = req.user.groups
     const questionnaire = await Questionnaire.findById(questionnaireId)
     if(!questionnaire) {
-        res.status(400)
+        res.status(404)
         throw new Error('Wrong Questionnaire ID')
     }
     const questionnaireGroups = questionnaire.groups
@@ -196,13 +196,13 @@ const submitAnswer = asyncHandler(async (req, res) => {
 
     // Richtige Anzahl an Antoworten?
     if(answers.length != questionnaire.answerCount) {
-        res.status(404)
+        res.status(400)
         throw new Error('Wrong count of answers')
     }
 
     // Richtige Groups?
     if(!(userGroups.some((group) => questionnaireGroups.includes(group)))) {
-        res.status(401)
+        res.status(404)
         throw new Error('Wrong Group')
     }
 

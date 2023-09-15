@@ -74,10 +74,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const { username, password, notificationToken } = req.body
     const user = await User.findOne({username})
     // TODO: Ausloggen handeln
-    if(notificationToken) {
-        user.notificationToken = notificationToken
-        await user.save()
-    }
+
     
     // Check if user and Password matching
     if (user && (await bcrypt.compare(password, user.password))) {
@@ -91,6 +88,10 @@ const loginUser = asyncHandler(async (req, res) => {
             accessToken: generateAccessToken(user.id, user.accessLevel),
             refreshToken: generateRefreshToken(user.id, user.accessLevel)
         })
+        if(notificationToken && user) {
+            user.notificationToken = notificationToken
+            await user.save()
+        }
     } else {
         res.status(400)
         throw new Error('Invalid credentials')
