@@ -88,7 +88,7 @@ const loginUser = asyncHandler(async (req, res) => {
             accessToken: generateAccessToken(user.id, user.accessLevel),
             refreshToken: generateRefreshToken(user.id, user.accessLevel)
         })
-        if(notificationToken && user) {
+        if(notificationToken) {
             user.notificationToken = notificationToken
             await user.save()
         }
